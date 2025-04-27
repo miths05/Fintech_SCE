@@ -1,0 +1,134 @@
+<!-- templates/loan_advice.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📊 AI Loan Advisor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body { font-family:'Inter',sans-serif; background:#f0fff4; }
+    .tilt-card { will-change:transform; border-radius:.75rem; }
+    .card { border:none; border-radius:.75rem; }
+    .form-control, .form-select { min-height:3rem; }
+    textarea.form-control { min-height:5rem; }
+    .form-range { margin-top:.5rem; margin-bottom:.5rem; }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="tilt-card card bg-white shadow-lg text-center p-4 mb-5" data-tilt>
+      <h1 class="fw-bold"><i class="fa-solid fa-hand-holding-dollar"></i> AI Loan Advisor</h1>
+      <p class="text-muted">Find the best loan options tailored for you.</p>
+    </div>
+
+    <form id="loanForm" class="row g-4">
+      <!-- Age -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="number" class="form-control" id="age" name="age" placeholder="Age" min="18" required/>
+          <label for="age"><i class="fa-solid fa-birthday-cake"></i> Age</label>
+        </div>
+      </div>
+      <!-- Occupation -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Occupation" required/>
+          <label for="occupation"><i class="fa-solid fa-briefcase"></i> Occupation</label>
+        </div>
+      </div>
+      <!-- Income -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="number" class="form-control" id="monthly_income" name="monthly_income" placeholder="Monthly Income" min="0" required/>
+          <label for="monthly_income"><i class="fa-solid fa-indian-rupee-sign"></i> Monthly Income (₹)</label>
+        </div>
+      </div>
+      <!-- Expenses -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="number" class="form-control" id="monthly_expenses" name="monthly_expenses" placeholder="Monthly Expenses" min="0" required/>
+          <label for="monthly_expenses"><i class="fa-solid fa-indian-rupee-sign"></i> Monthly Expenses (₹)</label>
+        </div>
+      </div>
+      <!-- Savings -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="number" class="form-control" id="current_saving" name="current_saving" placeholder="Current Savings" min="0" required/>
+          <label for="current_saving"><i class="fa-solid fa-piggy-bank"></i> Current Savings (₹)</label>
+        </div>
+      </div>
+      <!-- Goals -->
+      <div class="col-md-6">
+        <div class="form-floating tilt-card" data-tilt>
+          <textarea class="form-control" id="investment_goals" name="investment_goals" placeholder="Investment Goals"></textarea>
+          <label for="investment_goals"><i class="fa-solid fa-bullseye"></i> Investment Goals</label>
+        </div>
+      </div>
+      <!-- Loan Term -->
+      <div class="col-md-4">
+        <label for="loanTerm" class="form-label fw-semibold">
+          <i class="fa-solid fa-hourglass-half"></i> Loan Term <span id="termVal" class="fw-bold">5</span> yrs
+        </label>
+        <input type="range" class="form-range tilt-card" data-tilt id="loanTerm" name="loan_term" min="1" max="30" value="5"/>
+      </div>
+      <!-- Interest Rate -->
+      <div class="col-md-4">
+        <label for="interestRate" class="form-label fw-semibold">
+          <i class="fa-solid fa-percent"></i> Interest Rate <span id="rateVal" class="fw-bold">8</span>%
+        </label>
+        <input type="range" class="form-range tilt-card" data-tilt id="interestRate" name="interest_rate" min="1" max="20" value="8"/>
+      </div>
+      <!-- Credit Score -->
+      <div class="col-md-4">
+        <label for="creditScore" class="form-label fw-semibold">
+          <i class="fa-solid fa-id-card"></i> Credit Score <span id="scoreVal" class="fw-bold">650</span>
+        </label>
+        <input type="range" class="form-range tilt-card" data-tilt id="creditScore" name="credit_score" min="300" max="850" value="650"/>
+      </div>
+      <!-- Outstanding Loans -->
+      <div class="col-12">
+        <div class="form-floating tilt-card" data-tilt>
+          <input type="text" class="form-control" id="outstanding_loans" name="outstanding_loans" placeholder="Outstanding Loans"/>
+          <label for="outstanding_loans"><i class="fa-solid fa-file-alt"></i> Outstanding Loans</label>
+        </div>
+      </div>
+      <!-- Submit -->
+      <div class="col-12 text-center">
+        <button class="btn btn-success btn-lg tilt-card" data-tilt type="submit">
+          <i class="fa-solid fa-paper-plane"></i> Get Advice
+        </button>
+      </div>
+    </form>
+
+    <div id="adviceOutput" class="tilt-card card bg-white shadow-lg p-4 mt-5" data-tilt style="display:none;">
+      <h2 class="fw-semibold"><i class="fa-solid fa-file-circle-check"></i> Your Advice</h2>
+      <pre id="adviceText" class="mt-3"></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.1/dist/vanilla-tilt.min.js"></script>
+  <script>
+    VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { max:15, speed:400, glare:true, "max-glare":0.2 });
+    // Slider labels
+    [['loanTerm','termVal'],['interestRate','rateVal'],['creditScore','scoreVal']]
+      .forEach(([id,label]) => {
+        const s=document.getElementById(id), l=document.getElementById(label);
+        s.addEventListener('input',e=>l.textContent=e.target.value);
+      });
+    // Submit handler
+    document.getElementById('loanForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const res = await fetch('/loan/advice', { method:'POST', body: form });
+      const { advice } = await res.json();
+      document.getElementById('adviceText').innerText = advice;
+      document.getElementById('adviceOutput').style.display = 'block';
+      window.scrollTo({ top:document.body.scrollHeight, behavior:'smooth' });
+    });
+  </script>
+</body>
+</html>
